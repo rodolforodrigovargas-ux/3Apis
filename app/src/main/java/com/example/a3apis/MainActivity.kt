@@ -18,7 +18,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import com.example.a3apis.data.repository.AppRepository
 import com.example.a3apis.ui.MainViewModel
 import com.example.a3apis.ui.screens.ExploreScreen
 import com.example.a3apis.ui.screens.FavoritesScreen
@@ -38,10 +40,11 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun _3apisApp(
-    viewModel: MainViewModel = remember { MainViewModel() }
-) {
+fun _3apisApp() {
+    val context = LocalContext.current.applicationContext
+    val viewModel: MainViewModel = remember { MainViewModel(AppRepository(context = context)) }
     val uiState by viewModel.uiState.collectAsState()
+    val favoriteCards by viewModel.favoriteCards.collectAsState()
     var currentDestination by rememberSaveable { mutableStateOf(AppDestinations.HOME) }
 
     NavigationSuiteScaffold(
@@ -79,7 +82,7 @@ fun _3apisApp(
                 )
 
                 AppDestinations.FAVORITES -> FavoritesScreen(
-                    uiState = uiState,
+                    favoriteCards = favoriteCards,
                     onFavoriteToggle = { viewModel.toggleFavorite(it) },
                     modifier = modifier
                 )

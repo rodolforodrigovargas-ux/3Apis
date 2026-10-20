@@ -24,20 +24,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.a3apis.data.model.CardCategory
 import com.example.a3apis.data.model.UnifiedCard
 import com.example.a3apis.ui.OracleUiState
 import com.example.a3apis.ui.components.UnifiedCardItem
-import com.example.a3apis.ui.theme._3apisTheme
 
 @Composable
 fun HomeScreen(
     uiState: OracleUiState,
     onRefreshClick: () -> Unit,
-    onFavoriteToggle: (String) -> Unit,
+    onFavoriteToggle: (UnifiedCard) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -64,9 +61,7 @@ fun HomeScreen(
         when (uiState) {
             is OracleUiState.Loading -> {
                 Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .weight(1f),
+                    modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
                 ) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -86,9 +81,7 @@ fun HomeScreen(
 
             is OracleUiState.Error -> {
                 Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .weight(1f),
+                    modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
                 ) {
                     Column(
@@ -117,11 +110,11 @@ fun HomeScreen(
 
             is OracleUiState.Success -> {
                 LazyColumn(
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier.fillMaxSize(),
                     contentPadding = PaddingValues(vertical = 8.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    items(uiState.cards, key = { it.id }) { card ->
+                    items(items = uiState.cards, key = { card -> card.id }) { card ->
                         UnifiedCardItem(
                             card = card,
                             isFavorite = uiState.favoriteIds.contains(card.id),
@@ -153,47 +146,5 @@ fun HomeScreen(
                 }
             }
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun HomeScreenPreview() {
-    _3apisTheme {
-        HomeScreen(
-            uiState = OracleUiState.Success(
-                cards = listOf(
-                    UnifiedCard(
-                        id = "tarot_1",
-                        title = "The Star (La Estrella)",
-                        subtitle = "Arcano Mayor",
-                        description = "Esperanza, inspiración y serenidad para guiar tus decisiones.",
-                        category = CardCategory.TAROT,
-                        tags = listOf("Mayor", "Esperanza"),
-                        extraInfo = "Tu carta guía de hoy"
-                    ),
-                    UnifiedCard(
-                        id = "pokemon_251",
-                        title = "Celebi",
-                        subtitle = "Pokémon #251",
-                        description = "Altura: 0.6m | Peso: 5.0kg",
-                        category = CardCategory.POKEMON,
-                        tags = listOf("Planta", "Psíquico"),
-                        extraInfo = "Tu compañero en esta lectura"
-                    ),
-                    UnifiedCard(
-                        id = "advice_1",
-                        title = "Consejo #1",
-                        subtitle = "Reflexión Diaria",
-                        description = "\"No te preocupes por el futuro, disfruta el presente un paso a la vez.\"",
-                        category = CardCategory.ADVICE,
-                        tags = listOf("Sabiduría", "Reflexión"),
-                        extraInfo = "Aplica este mensaje durante tu día"
-                    )
-                )
-            ),
-            onRefreshClick = {},
-            onFavoriteToggle = {}
-        )
     }
 }

@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.a3apis.data.model.CardCategory
+import com.example.a3apis.data.model.UnifiedCard
 import com.example.a3apis.ui.OracleUiState
 import com.example.a3apis.ui.components.UnifiedCardItem
 
@@ -29,7 +30,7 @@ import com.example.a3apis.ui.components.UnifiedCardItem
 fun ExploreScreen(
     uiState: OracleUiState,
     onFilterSelected: (String?) -> Unit,
-    onFavoriteToggle: (String) -> Unit,
+    onFavoriteToggle: (UnifiedCard) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -104,7 +105,7 @@ fun ExploreScreen(
                     contentPadding = PaddingValues(vertical = 8.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    items(filteredCards, key = { it.id }) { card ->
+                    items(items = filteredCards, key = { card -> card.id }) { card ->
                         UnifiedCardItem(
                             card = card,
                             isFavorite = uiState.favoriteIds.contains(card.id),

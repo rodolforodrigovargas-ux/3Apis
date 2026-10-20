@@ -1,10 +1,11 @@
 package com.example.a3apis.data.mapper
 
+import com.example.a3apis.data.local.FavoritoEntity
+import com.example.a3apis.data.model.CardCategory
+import com.example.a3apis.data.model.UnifiedCard
 import com.example.a3apis.data.remote.model.AdviceSlipDto
 import com.example.a3apis.data.remote.model.PokemonDto
 import com.example.a3apis.data.remote.model.TarotCardDto
-import com.example.a3apis.data.model.CardCategory
-import com.example.a3apis.data.model.UnifiedCard
 
 object UnifiedMapper {
 
@@ -52,6 +53,39 @@ object UnifiedMapper {
             category = CardCategory.ADVICE,
             tags = listOf("Sabiduría", "Reflexión"),
             extraInfo = "Aplica este mensaje durante tu día"
+        )
+    }
+
+    fun mapUnifiedToFavoritoEntity(card: UnifiedCard): FavoritoEntity {
+        return FavoritoEntity(
+            id = card.id,
+            title = card.title,
+            subtitle = card.subtitle,
+            description = card.description,
+            imageUrl = card.imageUrl,
+            categoryName = card.category.name,
+            tags = card.tags.joinToString(","),
+            extraInfo = card.extraInfo
+        )
+    }
+
+    fun mapFavoritoEntityToUnified(entity: FavoritoEntity): UnifiedCard {
+        val category = try {
+            CardCategory.valueOf(entity.categoryName)
+        } catch (e: Exception) {
+            CardCategory.ADVICE
+        }
+        val tagsList = entity.tags.split(",").filter { it.isNotBlank() }
+
+        return UnifiedCard(
+            id = entity.id,
+            title = entity.title,
+            subtitle = entity.subtitle,
+            description = entity.description,
+            imageUrl = entity.imageUrl,
+            category = category,
+            tags = tagsList,
+            extraInfo = entity.extraInfo
         )
     }
 }

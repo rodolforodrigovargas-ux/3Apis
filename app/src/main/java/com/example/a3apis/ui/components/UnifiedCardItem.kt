@@ -46,7 +46,7 @@ import com.example.a3apis.data.model.UnifiedCard
 fun UnifiedCardItem(
     card: UnifiedCard,
     isFavorite: Boolean,
-    onFavoriteToggle: (String) -> Unit,
+    onFavoriteToggle: (UnifiedCard) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val categoryColor = when (card.category) {
@@ -100,7 +100,7 @@ fun UnifiedCardItem(
 
                 // Favorite Icon Button
                 IconButton(
-                    onClick = { onFavoriteToggle(card.id) },
+                    onClick = { onFavoriteToggle(card) },
                     modifier = Modifier.size(36.dp)
                 ) {
                     Icon(

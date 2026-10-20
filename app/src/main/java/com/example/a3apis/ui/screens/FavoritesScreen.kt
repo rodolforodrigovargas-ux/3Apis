@@ -18,13 +18,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.example.a3apis.ui.OracleUiState
+import com.example.a3apis.data.model.UnifiedCard
 import com.example.a3apis.ui.components.UnifiedCardItem
 
 @Composable
 fun FavoritesScreen(
-    uiState: OracleUiState,
-    onFavoriteToggle: (String) -> Unit,
+    favoriteCards: List<UnifiedCard>,
+    onFavoriteToggle: (UnifiedCard) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -40,53 +40,38 @@ fun FavoritesScreen(
             color = MaterialTheme.colorScheme.primary
         )
         Text(
-            text = "Tus cartas y consejos guardados",
+            text = "Tus cartas guardadas en la base de datos (Room)",
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.padding(top = 4.dp, bottom = 12.dp)
         )
 
-        if (uiState is OracleUiState.Success) {
-            val favoriteCards = uiState.cards.filter { uiState.favoriteIds.contains(it.id) }
-
-            if (favoriteCards.isEmpty()) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(24.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = "Aún no has guardado ninguna carta como favorita.\n\nPresiona el corazón ❤️ en cualquier tarjeta para guardarla aquí.",
-                        style = MaterialTheme.typography.bodyLarge,
-                        textAlign = TextAlign.Center,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
-            } else {
-                LazyColumn(
-                    contentPadding = PaddingValues(vertical = 8.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    items(favoriteCards, key = { it.id }) { card ->
-                        UnifiedCardItem(
-                            card = card,
-                            isFavorite = true,
-                            onFavoriteToggle = onFavoriteToggle
-                        )
-                    }
-                }
-            }
-        } else {
+        if (favoriteCards.isEmpty()) {
             Box(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(24.dp),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = "Aún no hay cartas cargadas.",
+                    text = "Aún no has guardado ningún favorito en la base de datos.\n\nPresiona el corazón ❤️ en cualquier tarjeta para guardarla en Room.",
                     style = MaterialTheme.typography.bodyLarge,
+                    textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
+            }
+        } else {
+            LazyColumn(
+                contentPadding = PaddingValues(vertical = 8.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                items(items = favoriteCards, key = { card -> card.id }) { card ->
+                    UnifiedCardItem(
+                        card = card,
+                        isFavorite = true,
+                        onFavoriteToggle = onFavoriteToggle
+                    )
+                }
             }
         }
     }
